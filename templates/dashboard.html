@@ -16,172 +16,145 @@
     <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
     
     <style>
-        :root {
-            --primary-blue: #1a73e8;
-            --primary-green: #34a853;
-            --dark: #202124;
-            --light-bg: #f8f9fa;
-            --white: #ffffff;
+        .metric-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
         }
         
-        /* Estilos generales */
-        body {
-            background-color: var(--light-bg);
-            min-height: 100vh;
-            color: var(--dark);
+        .metric-card.success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
         }
         
-        /* Navbar y logo */
-        .navbar {
-            background-color: var(--primary-blue) !important;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 1rem 0;
+        .metric-card.warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .metric-card.info {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            min-height: 400px;
+        }
+        
+        .chart-container canvas {
+            max-height: 300px;
+        }
+        
+        #temporalChart {
+            height: 400px !important;
+            width: 100% !important;
         }
         
         .navbar-brand {
             font-weight: bold;
-            font-size: 2rem;
-            color: var(--white) !important;
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .navbar-brand:hover {
+            transform: scale(1.05);
         }
         
         .navbar-brand img {
-            height: 50px !important;
-            width: auto;
-            filter: drop-shadow(0 0 10px rgba(255,255,255,0.5));
-            transition: transform 0.3s ease, filter 0.3s ease;
+            transition: transform 0.3s ease;
         }
         
         .navbar-brand:hover img {
-            transform: scale(1.1);
-            filter: drop-shadow(0 0 15px rgba(255,255,255,0.8));
+            transform: rotate(5deg);
         }
         
-        .navbar-text {
-            color: var(--white) !important;
-            font-size: 1.2rem;
-        }
-        
-        /* Tarjetas métricas */
-        .metric-card {
-            background-color: var(--primary-blue);
-            color: var(--white);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            transition: transform 0.2s ease;
-        }
-        
-        .metric-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .metric-card.success {
-            background-color: var(--primary-green);
-        }
-        
-        .metric-card.warning {
-            background-color: var(--dark);
-        }
-        
-        .metric-card.info {
-            background-color: var(--primary-blue);
-        }
-        
-        /* Contenedores de gráficos */
-        .chart-container {
-            background-color: var(--white);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        /* Sección de filtros */
         .filter-section {
-            background-color: var(--white);
-            border-radius: 10px;
+            background: #f8f9fa;
+            border-radius: 15px;
             padding: 20px;
             margin-bottom: 20px;
-            border: 1px solid rgba(0,0,0,0.1);
         }
         
-        /* Badges de prioridad */
         .priority-badge {
             font-size: 0.8rem;
             padding: 5px 10px;
-            border-radius: 15px;
-            font-weight: bold;
+            border-radius: 20px;
         }
         
-        .priority-high { background-color: var(--dark); color: var(--white); }
-        .priority-medium { background-color: var(--primary-blue); color: var(--white); }
-        .priority-low { background-color: var(--primary-green); color: var(--white); }
+        .priority-high { background-color: #dc3545; color: white; }
+        .priority-medium { background-color: #ffc107; color: black; }
+        .priority-low { background-color: #28a745; color: white; }
         
-        /* Estado de carga y mensajes */
         .loading {
             text-align: center;
-            padding: 30px;
-            color: var(--primary-blue);
+            padding: 50px;
         }
         
         .spinner-border {
-            color: var(--primary-blue);
+            width: 3rem;
+            height: 3rem;
         }
         
         .error-message {
-            color: var(--dark);
+            color: #dc3545;
             text-align: center;
-            padding: 15px;
-            background-color: rgba(255,0,0,0.1);
+            padding: 20px;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
             border-radius: 5px;
             margin: 10px 0;
         }
         
         .success-message {
-            color: var(--primary-green);
+            color: #155724;
             text-align: center;
-            padding: 15px;
-            background-color: rgba(52,168,83,0.1);
+            padding: 20px;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
             border-radius: 5px;
             margin: 10px 0;
         }
         
-        /* Botones */
-        .btn-primary {
-            background-color: var(--primary-blue);
-            border-color: var(--primary-blue);
+        /* Estilos para Orion */
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
         }
         
-        .btn-primary:hover {
-            background-color: var(--dark);
-            border-color: var(--dark);
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
         
-        .btn-secondary {
-            background-color: var(--dark);
-            border-color: var(--dark);
+        .navbar-brand {
+            color: white !important;
         }
         
-        .btn-secondary:hover {
-            background-color: var(--primary-blue);
-            border-color: var(--primary-blue);
+        .navbar-text {
+            color: rgba(255,255,255,0.8) !important;
+        }
+        
+        .container-fluid {
+            background: transparent;
         }
     </style>
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand d-flex align-items-center" href="#">
-                <div class="d-flex align-items-center">
-                    <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Orion" class="me-3">
-                    <span class="fw-bold">Orion</span>
-                </div>
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Orion" class="me-3" style="height: 40px; width: auto;">
+                <span class="fw-bold fs-4">Orion</span>
             </a>
             <div class="navbar-nav ms-auto">
                 <span class="navbar-text">
-                    <i class="fas fa-chart-line me-2"></i>Sistema de Análisis Inteligente
+                    <i class="fas fa-chart-line"></i> Sistema de Análisis Inteligente
                 </span>
             </div>
         </div>
