@@ -82,7 +82,7 @@
         
         .priority-badge {
             font-size: 0.8rem;
-            padding: 5px 10px;
+            padding: 5px 10px;  
             border-radius: 20px;
         }
         
@@ -127,16 +127,26 @@
         }
         
         .navbar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            background-color: #000000 !important;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            padding: 1rem 0;
         }
         
         .navbar-brand {
             color: white !important;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand img {
+            height: 60px !important;
+            width: auto;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
+            transition: transform 0.3s ease;
         }
         
-        .navbar-text {
-            color: rgba(255,255,255,0.8) !important;
+        .navbar-brand:hover img {
+            transform: scale(1.1);
         }
         
         .container-fluid {
@@ -146,17 +156,12 @@
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
-            <a class="navbar-brand d-flex align-items-center" href="#">
-                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Orion" class="me-3" style="height: 40px; width: auto;">
-                <span class="fw-bold fs-4">Orion</span>
+            <a class="navbar-brand" href="#">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Orion" class="me-3">
+                <span class="fw-bold fs-2">Orion</span>
             </a>
-            <div class="navbar-nav ms-auto">
-                <span class="navbar-text">
-                    <i class="fas fa-chart-line"></i> Sistema de Análisis Inteligente
-                </span>
-            </div>
         </div>
     </nav>
 
