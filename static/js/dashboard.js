@@ -168,31 +168,20 @@ async function loadUrgencyChart() {
     try {
         const response = await fetch('/api/urgency-distribution');
         const data = await response.json();
-        
         if (data.success) {
             const chartData = data.data;
-            
+            const total = chartData.values.reduce((a, b) => a + b, 0) || 1;
+            const percentValues = chartData.values.map(v => ((v / total) * 100).toFixed(1));
             const ctx = document.getElementById('urgencyChart').getContext('2d');
-            
-            if (urgencyChart) {
-                urgencyChart.destroy();
-            }
-            
+            if (urgencyChart) urgencyChart.destroy();
             urgencyChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: chartData.labels,
                     datasets: [{
-                        label: 'Número de Casos',
-                        data: chartData.values,
-                        backgroundColor: [
-                            colors.danger,
-                            colors.success
-                        ],
-                        borderColor: [
-                            colors.danger,
-                            colors.success
-                        ],
+                        label: 'Porcentaje de Casos',
+                        data: percentValues,
+                        // Sin backgroundColor ni borderColor para usar el color por defecto
                         borderWidth: 2
                     }]
                 },
@@ -201,7 +190,11 @@ async function loadUrgencyChart() {
                     maintainAspectRatio: false,
                     scales: {
                         y: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) { return value + '%'; }
+                            }
                         }
                     }
                 }
@@ -867,28 +860,18 @@ function updateUrgencyChart(chartData) {
         console.warn('No hay datos para el gráfico de urgencia');
         return;
     }
-
     const ctx = document.getElementById('urgencyChart').getContext('2d');
-    
-    if (urgencyChart) {
-        urgencyChart.destroy();
-    }
-    
+    if (urgencyChart) urgencyChart.destroy();
+    const total = chartData.values.reduce((a, b) => a + b, 0) || 1;
+    const percentValues = chartData.values.map(v => ((v / total) * 100).toFixed(1));
     urgencyChart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: chartData.labels,
             datasets: [{
-                label: 'Número de Casos',
-                data: chartData.values,
-                backgroundColor: [
-                    colors.danger,
-                    colors.success
-                ],
-                borderColor: [
-                    colors.danger,
-                    colors.success
-                ],
+                label: 'Porcentaje de Casos',
+                data: percentValues,
+                // Sin backgroundColor ni borderColor para usar el color por defecto
                 borderWidth: 2
             }]
         },
@@ -897,7 +880,11 @@ function updateUrgencyChart(chartData) {
             maintainAspectRatio: false,
             scales: {
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        callback: function(value) { return value + '%'; }
+                    }
                 }
             }
         }
