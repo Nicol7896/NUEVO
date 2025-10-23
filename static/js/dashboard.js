@@ -446,20 +446,25 @@ async function loadFilteredData(categoria, urgencia, fechaInicio, fechaFin) {
         if (fechaInicio) params.append('fecha_inicio', fechaInicio);
         if (fechaFin) params.append('fecha_fin', fechaFin);
         
-        const baseUrl = '/api/filtered-metrics';
-        const url = params.toString() ? `${baseUrl}?${params.toString()}` : baseUrl;
+        // Cargar métricas y gráficos en paralelo
+        const [metricsResponse, chartsResponse] = await Promise.all([
+            fetch(`/api/filtered-metrics?${params.toString()}`),
+            fetch(`/api/filtered-charts?${params.toString()}`)
+        ]);
         
-        console.log('🔄 Cargando métricas filtradas...');
-        const response = await fetch(url);
+        console.log('🔄 Cargando datos filtrados...');
         
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        if (!metricsResponse.ok || !chartsResponse.ok) {
+            throw new Error('Error en la respuesta del servidor');
         }
         
-        const data = await response.json();
+        const [metricsData, chartsData] = await Promise.all([
+            metricsResponse.json(),
+            chartsResponse.json()
+        ]);
         
-        if (data.success) {
-            const metrics = data.data;
+        if (metricsData.success) {
+            const metrics = metricsData.data;
             console.log('✅ Métricas filtradas recibidas:', metrics);
             
             // Actualizar métricas en el dashboard
@@ -470,18 +475,31 @@ async function loadFilteredData(categoria, urgencia, fechaInicio, fechaFin) {
             document.getElementById('porcentaje-rural').textContent = `${metrics.porcentaje_rural || 0}%`;
             document.getElementById('sin-internet').textContent = formatNumber(metrics.sin_internet || 0);
             document.getElementById('porcentaje-sin-internet').textContent = `${metrics.porcentaje_sin_internet || 0}%`;
-            
-            // Cargar casos prioritarios filtrados
-            await loadFilteredPriorityCases(categoria, urgencia, fechaInicio, fechaFin);
-            
-        } else {
-            throw new Error(data.error || 'Error desconocido en métricas filtradas');
         }
+        
+        if (chartsData.success) {
+            const charts = chartsData.data;
+            console.log('✅ Datos de gráficos filtrados recibidos');
+            
+            // Actualizar gráfico de categorías
+            updateCategoryChart(charts.category);
+            
+            // Actualizar gráfico de urgencia
+            updateUrgencyChart(charts.urgency);
+            
+            // Actualizar gráfico temporal
+            updateTemporalChart(charts.temporal);
+        }
+        
+        // Cargar casos prioritarios filtrados
+        await loadFilteredPriorityCases(categoria, urgencia, fechaInicio, fechaFin);
+        
     } catch (error) {
         console.error('Error cargando datos filtrados:', error);
         throw error;
     }
 }
+
 
 /**
  * Cargar casos prioritarios filtrados
@@ -796,6 +814,144 @@ async function resetToDefaultData() {
         console.error('Error al restaurar datos:', error);
         showUploadStatus('Error al restaurar los datos', 'error');
     }
+}
+
+/**
+ * Actualizar gráfico de categorías con datos filtrados
+ */
+function updateCategoryChart(chartData) {
+    if (!chartData || !chartData.labels || chartData.labels.length === 0) {
+        console.warn('No hay datos para el gráfico de categorías');
+        return;
+    }
+
+    const ctx = document.getElementById('categoryChart').getContext('2d');
+    
+    if (categoryChart) {
+        categoryChart.destroy();
+    }
+    
+    categoryChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: chartData.labels,
+            datasets: [{
+                data: chartData.values,
+                backgroundColor: [
+                    colors.primary,
+                    colors.success,
+                    colors.warning,
+                    colors.danger
+                ],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+}
+
+/**
+ * Actualizar gráfico de urgencia con datos filtrados
+ */
+function updateUrgencyChart(chartData) {
+    if (!chartData || !chartData.labels || chartData.labels.length === 0) {
+        console.warn('No hay datos para el gráfico de urgencia');
+        return;
+    }
+
+    const ctx = document.getElementById('urgencyChart').getContext('2d');
+    
+    if (urgencyChart) {
+        urgencyChart.destroy();
+    }
+    
+    urgencyChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: chartData.labels,
+            datasets: [{
+                label: 'Número de Casos',
+                data: chartData.values,
+                backgroundColor: [
+                    colors.danger,
+                    colors.success
+                ],
+                borderColor: [
+                    colors.danger,
+                    colors.success
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+/**
+ * Actualizar gráfico temporal con datos filtrados
+ */
+function updateTemporalChart(chartData) {
+    if (!chartData || !chartData.months || chartData.months.length === 0) {
+        console.warn('No hay datos para el gráfico temporal');
+        return;
+    }
+
+    const plotData = [{
+        x: chartData.months,
+        y: chartData.counts,
+        type: 'scatter',
+        mode: 'lines+markers',
+        name: 'Reportes por Mes',
+        line: {
+            color: colors.primary,
+            width: 3
+        },
+        marker: {
+            color: colors.primary,
+            size: 8
+        }
+    }];
+    
+    const layout = {
+        title: {
+            text: 'Tendencias Mensuales',
+            font: { size: 16 }
+        },
+        xaxis: {
+            title: 'Mes'
+        },
+        yaxis: {
+            title: 'Número de Reportes'
+        },
+        margin: { t: 50, r: 50, b: 50, l: 50 },
+        height: 400,
+        autosize: true
+    };
+    
+    const config = {
+        responsive: true,
+        displayModeBar: true,
+        displaylogo: false
+    };
+    
+    Plotly.newPlot('temporalChart', plotData, layout, config);
 }
 
 /**

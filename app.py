@@ -445,6 +445,64 @@ def api_temporal_trends():
             'error': str(e)
         }), 500
 
+@app.route('/api/filtered-charts')
+def api_filtered_charts():
+    """API para obtener datos de gráficos filtrados"""
+    try:
+        # Obtener parámetros de filtro
+        categoria = request.args.get('categoria', '')
+        urgencia = request.args.get('urgencia', '')
+        fecha_inicio = request.args.get('fecha_inicio', '')
+        fecha_fin = request.args.get('fecha_fin', '')
+        
+        # Aplicar filtros
+        filtered_df = analyzer.get_active_df().copy()
+        
+        if categoria:
+            filtered_df = filtered_df[filtered_df['Categoría del problema'] == categoria]
+        if urgencia:
+            filtered_df = filtered_df[filtered_df['Nivel de urgencia'] == urgencia]
+        if fecha_inicio:
+            filtered_df = filtered_df[pd.to_datetime(filtered_df['Fecha del reporte']) >= fecha_inicio]
+        if fecha_fin:
+            filtered_df = filtered_df[pd.to_datetime(filtered_df['Fecha del reporte']) <= fecha_fin]
+        
+        # Obtener distribuciones
+        category_dist = filtered_df['Categoría del problema'].value_counts()
+        urgency_dist = filtered_df['Nivel de urgencia'].value_counts()
+        
+        # Preparar datos temporales
+        temporal_data = {'months': [], 'counts': []}
+        if 'Fecha del reporte' in filtered_df.columns:
+            filtered_df['Mes'] = pd.to_datetime(filtered_df['Fecha del reporte']).dt.to_period('M')
+            monthly_data = filtered_df.groupby('Mes').size()
+            temporal_data = {
+                'months': [str(month) for month in monthly_data.index],
+                'counts': monthly_data.values.tolist()
+            }
+        
+        return jsonify({
+            'success': True,
+            'data': {
+                'category': {
+                    'labels': category_dist.index.tolist(),
+                    'values': category_dist.values.tolist()
+                },
+                'urgency': {
+                    'labels': urgency_dist.index.tolist(),
+                    'values': urgency_dist.values.tolist()
+                },
+                'temporal': temporal_data
+            }
+        })
+        
+    except Exception as e:
+        print(f"❌ Error en api_filtered_charts: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
 @app.route('/api/filtered-data')
 def api_filtered_data():
     """API para datos filtrados"""
