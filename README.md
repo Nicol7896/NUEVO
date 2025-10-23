@@ -9,9 +9,9 @@
 -  **Filtros avanzados** para análisis
 -  **Identidad visual única** con logo y colores corporativos
 
-##  **Despliegue en Railway**
+##  **Despliegue en Render**
 
-Este proyecto está optimizado para desplegarse automáticamente en Railway.
+Este proyecto está optimizado para desplegarse automáticamente en Render.
 
 ### **Tecnologías**
 - **Backend**: Flask + HuggingFace Transformers
@@ -60,6 +60,7 @@ Soluciones concretas** - 5 problemas identificados y resueltos
 - **Detección automática** de sesgos éticos
 
 ---
+
 
 
 
