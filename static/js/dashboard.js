@@ -1,14 +1,27 @@
 /**
  * 🚀 Dashboard JavaScript - Sistema de Análisis Inteligente
  * Reto IBM SenaSoft 2025
+ *
+ * Secciones:
+ * 1. Variables y configuración global
+ * 2. Inicialización y carga principal
+ * 3. Carga y actualización de métricas
+ * 4. Gráficos (categoría, urgencia, temporal)
+ * 5. Casos prioritarios (lista y tabla)
+ * 6. Filtros y datos filtrados
+ * 7. Utilidades y helpers
+ * 8. Subida de archivos CSV personalizados
  */
 
-// Variables globales
+// 1. Variables y configuración global
+// ----------------------------------
+
+// Instancias de gráficos
 let categoryChart = null;
 let urgencyChart = null;
 let temporalChart = null;
 
-// Colores para gráficos
+// Paleta de colores para gráficos
 const colors = {
     primary: '#667eea',
     success: '#11998e',
@@ -27,6 +40,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Configurar manejo de subida de archivos
     setupFileUpload();
 });
+
+// 2. Inicialización y carga principal
+// ----------------------------------
+// Al cargar el DOM, inicializa el dashboard y la subida de archivos
 
 /**
  * Cargar todos los datos del dashboard
@@ -101,6 +118,10 @@ async function loadMetrics() {
         document.getElementById('porcentaje-sin-internet').textContent = 'Error';
     }
 }
+
+// 3. Carga y actualización de métricas
+// ------------------------------------
+// Obtiene y muestra las métricas principales del dashboard
 
 /**
  * Cargar gráfico de distribución por categoría
@@ -311,6 +332,10 @@ async function loadPriorityCases() {
     }
 }
 
+// 4. Gráficos (categoría, urgencia, temporal)
+// -------------------------------------------
+// Funciones para cargar y actualizar los gráficos principales del dashboard
+
 /**
  * Actualizar lista de casos prioritarios
  */
@@ -388,6 +413,10 @@ function getPriorityClass(priority) {
     if (priority >= 60) return 'priority-medium';
     return 'priority-low';
 }
+
+// 5. Casos prioritarios (lista y tabla)
+// -------------------------------------
+// Funciones para mostrar y actualizar la lista y tabla de casos prioritarios
 
 /**
  * Aplicar filtros
@@ -543,6 +572,9 @@ async function loadFilteredPriorityCases(categoria, urgencia, fechaInicio, fecha
     }
 }
 
+// 6. Filtros y datos filtrados
+// ----------------------------------
+
 /**
  * Validar fechas
  */
@@ -657,6 +689,9 @@ function hasActiveFilters() {
     return categoria || urgencia || fechaInicio || fechaFin;
 }
 
+// 7. Utilidades y helpers
+// ----------------------------------
+
 /**
  * Mostrar estado de carga
  */
@@ -707,6 +742,9 @@ function showError(message) {
 function formatNumber(num) {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
+
+// 8. Subida de archivos CSV personalizados
+// ----------------------------------
 
 /**
  * Configurar manejo de subida de archivos
