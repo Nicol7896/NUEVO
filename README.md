@@ -1,19 +1,15 @@
-# 🌟 Orion - Sistema de Análisis Inteligente
-## Reto IBM SenaSoft 2025
+# Orion 
+##  **Características**
 
-**Orion** es un sistema integral que combina **Inteligencia Artificial** con **visualización web** para analizar y priorizar reportes ciudadanos automáticamente. Diseñado con una identidad visual única y moderna.
+-  **Clasificación automática** con Zero-Shot Learning
+-  **Análisis de sentimientos** multilingüe
+-  **Determinación inteligente** de urgencia
+-  **Sistema de priorización** (0-100)
+-  **Dashboard interactivo** responsive con branding personalizado
+-  **Filtros avanzados** para análisis
+-  **Identidad visual única** con logo y colores corporativos
 
-## 🎯 **Características**
-
-- 🤖 **Clasificación automática** con Zero-Shot Learning
-- 😊 **Análisis de sentimientos** multilingüe
-- ⚡ **Determinación inteligente** de urgencia
-- 📊 **Sistema de priorización** (0-100)
-- 📈 **Dashboard interactivo** responsive con branding personalizado
-- 🔍 **Filtros avanzados** para análisis
-- 🎨 **Identidad visual única** con logo y colores corporativos
-
-## 🚀 **Despliegue en Railway**
+##  **Despliegue en Railway**
 
 Este proyecto está optimizado para desplegarse automáticamente en Railway.
 
@@ -28,7 +24,7 @@ Este proyecto está optimizado para desplegarse automáticamente en Railway.
 - `nlptown/bert-multilingual` - Análisis de Sentimientos
 - `facebook/bart-large-cnn` - Resúmenes Automáticos
 
-## 📊 **Funcionalidades**
+ **Funcionalidades**
 
 ### **Dashboard Interactivo**
 - Métricas en tiempo real
@@ -48,15 +44,15 @@ Este proyecto está optimizado para desplegarse automáticamente en Railway.
 - Análisis de brecha digital
 - Detección de desigualdades
 
-## 🎯 **Cumplimiento del Reto**
+##  **Cumplimiento del Reto**
 
-✅ **Prototipo funcional** - Sistema completamente operativo  
-✅ **Clasificación de datos** - 4 técnicas implementadas  
-✅ **Resumen de datos** - IA generativa + análisis estadístico  
-✅ **IA generativa** - 3 modelos HuggingFace Transformers  
-✅ **Soluciones concretas** - 5 problemas identificados y resueltos  
+ **Prototipo funcional** - Sistema completamente operativo  
+ **Clasificación de datos** - 4 técnicas implementadas  
+ **Resumen de datos** - IA generativa + análisis estadístico  
+ **IA generativa** - 3 modelos HuggingFace Transformers  
+Soluciones concretas** - 5 problemas identificados y resueltos  
 
-## 📈 **Resultados**
+##  **Resultados**
 
 - **40% reducción** en tiempo de procesamiento
 - **85% precisión** en priorización automática
@@ -65,4 +61,5 @@ Este proyecto está optimizado para desplegarse automáticamente en Railway.
 
 ---
 
-*Orion - Sistema de Análisis Inteligente - Reto IBM SenaSoft 2025* 🌟
+
+
